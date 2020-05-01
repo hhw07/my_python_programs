@@ -1,7 +1,5 @@
 # 8 Queens Problem
-'''
-[x0, x1, x2, x3, x4, x5, x6, x7]
-'''
+# [x0, x1, x2, x3, x4, x5, x6, x7]
 
 def diagonal_check(positions, p):
 	n = len(positions)
