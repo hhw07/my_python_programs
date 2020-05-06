@@ -1,5 +1,4 @@
 # 8 Queens Problem
-# [x0, x1, x2, x3, x4, x5, x6, x7]
 
 def diagonal_check(positions, p):
 	n = len(positions)
@@ -36,6 +35,22 @@ def find_pos(found):
 			del found[-1]
 	return found_pos
 
+def drawboard(board):
+	myboard = [[" - |" for i in range(8)] for j in range(8)]
+	for i in range(8):
+		myboard[i][board[i]] = " Q |"
+	
+	for i in range(8):
+		n = ""
+		for j in myboard[i]:
+			n += j
+		myboard[i] = n
+
+	return myboard
+
 a = find_pos([])
-for x in a:
-	print(x)
+for x in range(len(a)):
+	print("Solution %d" %x)
+	for i in drawboard(a[x]):
+		print(i)
+	print("\n")
