@@ -1,27 +1,23 @@
-b = """
-Console Minesweeper.
+# Console Minesweeper.
 
-':' will be initial console.
-'newgame x y l' will start a new game of x by y with l mines.
-'loadgame filename' will load saved game from JSON file.
-'exit' or 'quit' will exit the game.
-'help' will display this text
+# ':' will be initial console.
+# 'newgame x y l' will start a new game of x by y with l mines.
+# 'loadgame filename' will load saved game from JSON file.
+# 'exit' or 'quit' will exit the game.
 
-Enter commands to break and flag tiles.
-'> ' will be for entering commands.
-'flag x y' will flag the tile at coordinates x and y.
-'break x y' will break the tile at coordinates x and y (and any other tiles it reveals.)
-'quit' or 'exit' will exit game without saving.
-'save filename' will save current game in JSON file.
-'help' will display this text
-"""
+# Enter commands to break and flag tiles.
+# '> ' will be for entering commands.
+# 'flag x y' will flag the tile at coordinates x and y.
+# 'break x y' will break the tile at coordinates x and y (and any other tiles it reveals.)
+# 'quit' or 'exit' will exit game without saving.
+# 'save filename' will save current game in JSON file.
 
 import json
 import os
 from random import randint
 import time
 
-clear_command = 'cls'
+clear_command = 'tput reset'
 
 a = [-1, 0, 1]
 
@@ -40,7 +36,7 @@ def generate_minefield(x, y, l):
 			if mine not in mines:
 				mines.append(mine)
 				break
-	
+
 	return mines
 
 def generate_map_structure(x, y):
@@ -71,15 +67,15 @@ def find_value(x, y, mines):
 
 def fill_map(clearmap, minefield):
 	# Fills map with mines and numbers.
-	x = len(clearmap)
-	y = len(clearmap[0])
+	x = len(clearmap[0])
+	y = len(clearmap)
 	for i in range(x):
 		for j in range(y):
 			if [j, i] in minefield:
-				clearmap[i][j][0] = -1
+				clearmap[j][i][0] = -1
 				continue
 
-			clearmap[i][j][0] = find_value(i, j, minefield)
+			clearmap[j][i][0] = find_value(i, j, minefield)
 	
 	return clearmap
 
@@ -189,13 +185,18 @@ def find_flags_mines(mymap):
 	flags = 0
 	for i in mymap:
 		for j in i:
+			print(j)
 			if j[0] == -1:
 				mines += 1
+				# print("Mine!")
 			if j[2] == True:
 				flags += 1
+				# print("Flag!")
+		print()
 	return [flags, mines]
+	time.sleep(10)
 
-def init_console(a):
+def init_console():
 	os.system(clear_command)
 	while True:
 		command = input(": ").lower().split()
@@ -215,8 +216,12 @@ def init_console(a):
 			filename = command[1] + ".json"
 			with open(filename, 'r') as myfile:
 				thismap = json.load(myfile)
+				# print("BYE")
+				# time.sleep(5)
 
 			a = find_flags_mines(thismap)
+			# print("Hello")
+			# time.sleep(5)
 			flags = a[0]
 			mines = a[1]
 			del a
@@ -227,11 +232,10 @@ def init_console(a):
 		elif command[0] == "quit" or command[0] == "exit":
 			os.system(clear_command)
 			break
-		elif command[0] == "help":
-			print(a)
 
 def game_console(mymap, l, flagged=0):
 	os.system(clear_command)
+	print(l, flagged)
 	ylen = len(mymap)
 	xlen = len(mymap[0])
 
@@ -288,8 +292,6 @@ def game_console(mymap, l, flagged=0):
 				json.dump(mymap, myfile)
 			print("Saved current game progress in " + command[1] + ".json")
 			time.sleep(3)
-		elif command[0] == "help":
-			print(a)
 		os.system(clear_command)
 
-init_console(b)
+init_console()
