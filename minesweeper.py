@@ -260,7 +260,7 @@ def game_console(mymap, l, flagged=0):
 			x = int(command[1])
 			if 0 <= y < ylen and 0 <= x <= xlen:
 				if (not mymap[y][x][2]) and 0 <= y < ylen and 0 <= x <= xlen:
-					if mymap[y][x][1]:
+					if mymap[y][x][1] or mymap[y][x][0] == 0:
 						breaktile(mymap, x, y, xlen, ylen)
 					mymap[y][x][1] = True
 					if check_if_lost(mymap):
