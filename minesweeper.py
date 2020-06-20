@@ -196,7 +196,7 @@ def find_flags_mines(mymap):
 	return [flags, mines]
 
 def init_console(a):
-	os.system('tput reset')
+	os.system(clear_command)
 	while True:
 		command = input(": ").lower().split()
 		if command[0] == "newgame":
