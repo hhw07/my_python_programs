@@ -21,7 +21,7 @@ import os
 from random import randint
 import time
 
-clear_command = 'tput reset'
+clear_command = 'cls'
 
 a = [-1, 0, 1]
 
@@ -260,9 +260,9 @@ def game_console(mymap, l, flagged=0):
 			x = int(command[1])
 			if 0 <= y < ylen and 0 <= x <= xlen:
 				if (not mymap[y][x][2]) and 0 <= y < ylen and 0 <= x <= xlen:
-					mymap[y][x][1] = True
-					if True:
+					if mymap[y][x][1]:
 						breaktile(mymap, x, y, xlen, ylen)
+					mymap[y][x][1] = True
 					if check_if_lost(mymap):
 						breakgame(mymap)
 						os.system(clear_command)
