@@ -17,7 +17,7 @@ import os
 from random import randint
 import time
 
-clear_command = 'cls'
+clear_command = 'tput reset'
 
 a = [-1, 0, 1]
 
@@ -297,3 +297,4 @@ def game_console(mymap, l, flagged=0):
 		os.system(clear_command)
 
 init_console()
+a = input()
