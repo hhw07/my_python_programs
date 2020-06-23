@@ -17,7 +17,7 @@ import os
 from random import randint
 import time
 
-clear_command = 'tput reset'
+clear_command = 'cls'
 
 a = [-1, 0, 1]
 
@@ -279,6 +279,8 @@ def game_console(mymap, l, flagged=0):
 					os.system(clear_command)
 					printmap(mymap)
 					print("\nYou won!\nCongratulations!")
+					print("Press Enter to exit.")
+					s = inpput("")
 					break
 		elif command[0] == "quit" or command[0] == "exit":
 			q = input("Quit without saving?[y/n]: ")
