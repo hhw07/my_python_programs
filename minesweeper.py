@@ -4,6 +4,7 @@
 # 'newgame x y l' will start a new game of x by y with l mines.
 # 'loadgame filename' will load saved game from JSON file.
 # 'exit' or 'quit' will exit the game.
+# 'cls' or 'clear' will clear the screen
 
 # Enter commands to break and flag tiles.
 # '> ' will be for entering commands.
@@ -13,7 +14,7 @@
 # 'save filename' will save current game in JSON file.
 
 import json
-import os
+from os import system
 from random import randint
 import time
 
@@ -119,7 +120,7 @@ def breakgame(mymap):
 			if k[0] == -1:
 				k[1] = True
 				time.sleep(0.25)
-				os.system(clear_command)
+				system(clear_command)
 				printmap(mymap)
 
 def check_if_lost(mymap):
@@ -197,44 +198,49 @@ def find_flags_mines(mymap):
 	time.sleep(10)
 
 def init_console():
-	os.system(clear_command)
+	system(clear_command)
 	while True:
 		command = input(": ").lower().split()
-		if command[0] == "newgame":
-			x = int(command[1])
-			y = int(command[2])
-			l = int(command[3])
+		try:
+			if command[0] == "newgame":
+				x = int(command[1])
+				y = int(command[2])
+				l = int(command[3])
 
-			thismap = generate_map_structure(x, y)
-			mymines = generate_minefield(x, y, l)
+				thismap = generate_map_structure(x, y)
+				mymines = generate_minefield(x, y, l)
 
-			thismap = fill_map(thismap, mymines)
-			game_console(thismap, l)
-			os.system(clear_command)
+				thismap = fill_map(thismap, mymines)
+				game_console(thismap, l)
+				system(clear_command)
 
-		elif command[0] == "loadgame":
-			filename = command[1] + ".json"
-			with open(filename, 'r') as myfile:
-				thismap = json.load(myfile)
-				# print("BYE")
+			elif command[0] == "loadgame":
+				filename = command[1] + ".json"
+				with open(filename, 'r') as myfile:
+					thismap = json.load(myfile)
+					# print("BYE")
+					# time.sleep(5)
+
+				a = find_flags_mines(thismap)
+				# print("Hello")
 				# time.sleep(5)
+				flags = a[0]
+				mines = a[1]
+				del a
 
-			a = find_flags_mines(thismap)
-			# print("Hello")
-			# time.sleep(5)
-			flags = a[0]
-			mines = a[1]
-			del a
+				game_console(thismap, mines, flagged=flags)
+				system(clear_command)
 
-			game_console(thismap, mines, flagged=flags)
-			os.system(clear_command)
-
-		elif command[0] == "quit" or command[0] == "exit":
-			os.system(clear_command)
-			break
+			elif command[0] == "quit" or command[0] == "exit":
+				system(clear_command)
+				break
+			elif command[0] == "cls" or command[0] == "clear":
+				system(clear_command)
+		except:
+			print("Enter a valid instruction.")
 
 def game_console(mymap, l, flagged=0):
-	os.system(clear_command)
+	system(clear_command)
 	print(l, flagged)
 	ylen = len(mymap)
 	xlen = len(mymap[0])
@@ -244,57 +250,61 @@ def game_console(mymap, l, flagged=0):
 		print(f"Flags remaining: {l - flagged}")
 
 		command = input("> ").lower().split()
-		if command[0] == "flag":
-			y = int(command[2])
-			x = int(command[1])
-			if 0 <= y < ylen and 0 <= x <= xlen:
-				if mymap[y][x][1] == False:
-					mymap[y][x][2] = not mymap[y][x][2]
-					if mymap[y][x][2]:
-						flagged += 1
+		try:
+			if command[0] == "flag":
+				y = int(command[2])
+				x = int(command[1])
+				if 0 <= y < ylen and 0 <= x <= xlen:
+					if mymap[y][x][1] == False:
+						mymap[y][x][2] = not mymap[y][x][2]
+						if mymap[y][x][2]:
+							flagged += 1
+						else:
+							flagged -= 1
 					else:
-						flagged -= 1
-				else:
-					print("This tile is already broken.")
-					time.sleep(2)
-					os.system(clear_command)
-					continue
-		elif command[0] == "break":
-			y = int(command[2])
-			x = int(command[1])
-			if 0 <= y < ylen and 0 <= x <= xlen:
-				if (not mymap[y][x][2]) and 0 <= y < ylen and 0 <= x <= xlen:
-					if mymap[y][x][1] or mymap[y][x][0] == 0:
-						breaktile(mymap, x, y, xlen, ylen)
-					mymap[y][x][1] = True
-					if check_if_lost(mymap):
-						breakgame(mymap)
-						os.system(clear_command)
+						print("This tile is already broken.")
+						time.sleep(2)
+						system(clear_command)
+						continue
+			elif command[0] == "break":
+				y = int(command[2])
+				x = int(command[1])
+				if 0 <= y < ylen and 0 <= x <= xlen:
+					if (not mymap[y][x][2]) and 0 <= y < ylen and 0 <= x <= xlen:
+						if mymap[y][x][1] or mymap[y][x][0] == 0:
+							breaktile(mymap, x, y, xlen, ylen)
+						mymap[y][x][1] = True
+						if check_if_lost(mymap):
+							breakgame(mymap)
+							system(clear_command)
+							printmap(mymap)
+							print("\nGame over.")
+							print("Press Enter to exit.")
+							s = input("")
+							break
+					if check_if_won(mymap):
+						system(clear_command)
 						printmap(mymap)
-						print("\nGame over.")
-						print("Press Enter to exit.")
+						print("\nYou won!\nCongratulations!")
+						print("Press Enter to exit")
 						s = input("")
 						break
-				if check_if_won(mymap):
-					os.system(clear_command)
-					printmap(mymap)
-					print("\nYou won!\nCongratulations!")
-					print("Press Enter to exit.")
-					s = inpput("")
+			elif command[0] == "quit" or command[0] == "exit":
+				q = input("Quit without saving?[y/n]: ")
+				if q.lower() == "y":
 					break
-		elif command[0] == "quit" or command[0] == "exit":
-			q = input("Quit without saving?[y/n]: ")
-			if q.lower() == "y":
-				break
-			else:
-				print("Enter 'save filename' to save in JSON file.")
+				else:
+					print("Enter 'save filename' to save in JSON file.")
+					time.sleep(3)
+			elif command[0] == "save":
+				with open(command[1] + ".json", 'w') as myfile:
+					json.dump(mymap, myfile)
+				print("Saved current game progress in " + command[1] + ".json")
 				time.sleep(3)
-		elif command[0] == "save":
-			with open(command[1] + ".json", 'w') as myfile:
-				json.dump(mymap, myfile)
-			print("Saved current game progress in " + command[1] + ".json")
-			time.sleep(3)
-		os.system(clear_command)
+			system(clear_command)
+		except:
+			print("Enter a valid instruction.")
+			time.sleep(4)
+			system(clear_command)
 
 init_console()
-a = input()
